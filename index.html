@@ -91,8 +91,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .entry-row-item:last-child{border-bottom:none;border-radius:0 0 6px 6px;}
 .entry-desc { flex:1;font-size:16px;color:#ddd; }
 .entry-amount { font-size:16px;color:#ccc;font-variant-numeric:tabular-nums;margin-right:10px;white-space:nowrap; }
-.btn-del { background:#c0392b;border:none;color:#fff;font-size:18px;cursor:pointer;padding:0;border-radius:7px;-webkit-tap-highlight-color:transparent;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
-.btn-del:active{background:#e74c3c;}
+.btn-del { background:#3a2020;border:1px solid #5a2d2d;color:#c08080;font-size:15px;cursor:pointer;padding:0;border-radius:7px;-webkit-tap-highlight-color:transparent;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.btn-del:active{background:#4a2828;}
 .cat-empty { padding:12px 10px;font-size:15px;color:#555;background:#1e1e1e;border-radius:0 0 6px 6px; }
 
 /* ── Budget projeté table ── */
@@ -102,15 +102,15 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .budget-row:last-child{border-bottom:none;border-radius:0 0 6px 6px;}
 .budget-row-label-input { flex:1;background:none;border:none;border-bottom:1px dashed #333;color:#d8d8d6;font-size:16px;font-family:-apple-system,Arial,sans-serif;outline:none;padding:0;min-width:0;margin-right:8px; }
 .budget-row-label-input:focus{border-bottom-color:#666;color:#e8e8e6;}
-.budget-input-wrap { display:inline-flex;align-items:center; }
+.budget-input-wrap { display:inline-flex;align-items:stretch; }
 .budget-input { width:84px;text-align:center;padding:7px 6px;border-top:1px solid #444;border-bottom:1px solid #444;border-left:none;border-right:none;background:#2e2e2e;color:#e8e8e6;font-size:16px;font-family:-apple-system,Arial,sans-serif;appearance:textfield;outline:none; }
 .budget-input:focus{border-top-color:#777;border-bottom-color:#777;}
-.budget-arr { width:38px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#bbb;font-size:22px;user-select:none;-webkit-tap-highlight-color:transparent;background:#2e2e2e;border:1px solid #444;flex-shrink:0; }
+.budget-arr { width:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#bbb;font-size:20px;user-select:none;-webkit-tap-highlight-color:transparent;background:#2e2e2e;border:1px solid #444;flex-shrink:0; }
 .budget-arr.left{border-radius:6px 0 0 6px;}
 .budget-arr.right{border-radius:0 6px 6px 0;}
 .budget-arr:active{background:#3a3a3a;color:#e8e8e6;}
-.btn-row-del { background:#c0392b;border:none;color:#fff;font-size:16px;cursor:pointer;padding:0;margin-left:8px;border-radius:6px;-webkit-tap-highlight-color:transparent;flex-shrink:0;min-width:36px;min-height:36px;display:flex;align-items:center;justify-content:center; }
-.btn-row-del:active{background:#e74c3c;}
+.btn-row-del { background:#3a2020;border:1px solid #5a2d2d;color:#c08080;font-size:14px;cursor:pointer;padding:0;margin-left:8px;border-radius:6px;-webkit-tap-highlight-color:transparent;flex-shrink:0;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center; }
+.btn-row-del:active{background:#4a2828;}
 .btn-sec-add { width:100%;padding:11px;background:none;border:1px dashed #444;border-radius:0 0 6px 6px;color:#888;font-size:15px;cursor:pointer;margin-top:0;font-family:-apple-system,Arial,sans-serif;-webkit-tap-highlight-color:transparent; }
 .btn-sec-add:active{color:#999;border-color:#666;}
 
@@ -126,7 +126,6 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 #modal-mois { position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:950;display:flex;align-items:center;justify-content:center;padding:1.5rem; }
 #modal-mois.hidden { display:none; }
 .modal-box { background:#242424;border-radius:18px;border:1px solid #555;padding:2rem 1.5rem;max-width:340px;width:100%;text-align:center; }
-.modal-icon { font-size:48px;margin-bottom:1rem; }
 .modal-title { font-size:22px;font-weight:700;color:#e8e8e6;margin-bottom:.6rem;line-height:1.35; }
 .modal-month { color:#e8a84f; }
 .modal-sub { font-size:15px;color:#888;margin-bottom:2rem; }
@@ -143,7 +142,6 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <!-- Nouveau mois modal -->
 <div id="modal-mois" class="hidden">
   <div class="modal-box">
-    <div class="modal-icon">📅</div>
     <div class="modal-title">Allez&nbsp;! On attaque <span class="modal-month" id="modal-mois-nom"></span>, t’es prêt ?</div>
     <div class="modal-sub">Le mois dernier sera archivé.</div>
     <button class="btn-modal-oui" onclick="confirmerNouveauMois()">Oui, on y va !</button>
@@ -155,7 +153,6 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <!-- Modal confirmation générique -->
 <div id="modal-confirm" class="hidden">
   <div class="modal-box">
-    <div class="modal-icon" id="modal-confirm-icon">🗑️</div>
     <div class="modal-title" id="modal-confirm-title"></div>
     <div class="modal-sub" id="modal-confirm-sub" style="word-break:break-word;margin-bottom:2rem;"></div>
     <button class="btn-modal-oui" id="modal-confirm-ok" onclick="confirmAction()">Confirmer</button>
@@ -197,6 +194,17 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
   <!-- ── ONGLET 1 : DÉPENSES RÉEL ── -->
   <div id="reel" class="panel active">
+    <div class="cards" style="margin-bottom:.75rem">
+      <div class="card">
+        <div class="card-label">Dépensé réel</div>
+        <div class="card-value white" id="r-reel">0 DH</div>
+      </div>
+      <div class="card green-bg">
+        <div class="card-label">Reste réel</div>
+        <div class="card-value green" id="r-reste-reel">0 DH</div>
+      </div>
+    </div>
+
     <div class="entry-form">
       <div class="entry-row1">
         <div class="amount-input-wrap">
@@ -217,17 +225,6 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       </div>
     </div>
 
-    <div class="cards" style="margin-bottom:.75rem">
-      <div class="card">
-        <div class="card-label">Dépensé réel</div>
-        <div class="card-value white" id="r-reel">0 DH</div>
-      </div>
-      <div class="card green-bg">
-        <div class="card-label">Reste réel</div>
-        <div class="card-value green" id="r-reste-reel">0 DH</div>
-      </div>
-    </div>
-
     <div id="cat-list"></div>
   </div>
 
@@ -239,7 +236,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
         <input class="editable-val" id="salaire" type="number" value="10900" oninput="recalc()">
       </div>
       <div class="card green-bg">
-        <div class="card-label">Reste (rev − fixes − variable)</div>
+        <div class="card-label">Reste</div>
         <div class="card-value green" id="b-reste">— DH</div>
       </div>
     </div>
@@ -367,10 +364,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
         <input class="budget-row-label-input" type="text" value="${row.label}"
           onchange="updateBudgetRow(${row.id},'label',this.value)">
         <div class="budget-input-wrap">
-          <div class="budget-arr left" onclick="stepBudgetRow(${row.id},-50)">◀</div>
+          <div class="budget-arr left" onclick="stepBudgetRow(${row.id},-10)">◀</div>
           <input class="budget-input" type="number" value="${row.value}"
             onchange="updateBudgetRow(${row.id},'value',this.value)">
-          <div class="budget-arr right" onclick="stepBudgetRow(${row.id},50)">▶</div>
+          <div class="budget-arr right" onclick="stepBudgetRow(${row.id},10)">▶</div>
         </div>
         <button class="btn-row-del" onclick="removeBudgetRow('${secKey}',${row.id})">✕</button>`;
       container.appendChild(div);
@@ -420,7 +417,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       if (secKey === 'variable') refreshCatSelect();
       recalc();
     };
-    showConfirm('🗑️', 'Supprimer cette ligne ?', `${row.label}  —  ${fmt(row.value)}`, 'Oui, supprimer', '#c0392b');
+    showConfirm('', 'Supprimer cette ligne ?', `${row.label}  —  ${fmt(row.value)}`, 'Oui, supprimer', '#c0392b');
   }
 
   // ── Rendu liste réel ──────────────────────────────────────────────────────
@@ -474,7 +471,6 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   let pendingAction = null;
 
   function showConfirm(icon, title, sub, btnLabel, btnColor) {
-    document.getElementById('modal-confirm-icon').textContent = icon;
     document.getElementById('modal-confirm-title').textContent = title;
     document.getElementById('modal-confirm-sub').textContent = sub;
     const btn = document.getElementById('modal-confirm-ok');
@@ -501,7 +497,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       entries = entries.filter(e => !(e.cat?.trim().toLowerCase() === cat.trim().toLowerCase() && (e.desc||'—').trim() === desc));
       recalc();
     };
-    showConfirm('🗑️', 'Supprimer cette dépense ?', `${desc}  —  ${fmt(total)}`, 'Oui, supprimer', '#c0392b');
+    showConfirm('', 'Supprimer cette dépense ?', `${desc}  —  ${fmt(total)}`, 'Oui, supprimer', '#c0392b');
   }
 
   function addEntry() {
@@ -529,7 +525,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       recalc();
     };
     showConfirm(
-      '↩️',
+      '',
       'Annuler cette saisie ?',
       `${fmt(last.montant)}  —  ${last.desc || '—'}  (${last.cat})`,
       'Oui, annuler',
@@ -636,7 +632,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     const moisActuel  = document.getElementById('mois-label').textContent.trim();
     const moisAttendu = getMoisAttendu();
     setSyncStatus('syncing', 'Archivage…');
-    showToast('📦 Archivage de ' + moisActuel + '…', 5000);
+    showToast('Archivage de ' + moisActuel + '…', 5000);
     try {
       const url = SCRIPT_URL + '?action=archive&mois=' + encodeURIComponent(moisActuel)
                              + '&data=' + encodeURIComponent(JSON.stringify(getPayload()));
@@ -649,7 +645,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     } catch(err) {
       setSyncStatus('err');
       localStorage.setItem('bp_archive_bak_' + moisActuel, JSON.stringify(getPayload()));
-      showToast('⚠ Archivage échoué — copie locale conservée', 5000);
+      showToast('Archivage échoué — copie locale conservée', 5000);
     }
   }
 
