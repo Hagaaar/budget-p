@@ -103,9 +103,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .budget-row-label-input { flex:1;background:none;border:none;border-bottom:1px dashed #333;color:#d8d8d6;font-size:16px;font-family:-apple-system,Arial,sans-serif;outline:none;padding:0;min-width:0;margin-right:8px; }
 .budget-row-label-input:focus{border-bottom-color:#666;color:#e8e8e6;}
 .budget-input-wrap { display:inline-flex;align-items:stretch; }
-.budget-input { width:42px;text-align:center;padding:7px 4px;border-top:1px solid #444;border-bottom:1px solid #444;border-left:none;border-right:none;background:#2e2e2e;color:#e8e8e6;font-size:16px;font-family:-apple-system,Arial,sans-serif;appearance:textfield;outline:none; }
+.budget-input { width:58px;text-align:center;padding:6px 3px;border-top:1px solid #444;border-bottom:1px solid #444;border-left:none;border-right:none;background:#2e2e2e;color:#e8e8e6;font-size:15px;font-family:-apple-system,Arial,sans-serif;appearance:textfield;outline:none; }
 .budget-input:focus{border-top-color:#777;border-bottom-color:#777;}
-.budget-arr { width:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#bbb;font-size:20px;user-select:none;-webkit-tap-highlight-color:transparent;background:#2e2e2e;border:1px solid #444;flex-shrink:0; }
+.budget-arr { width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#bbb;font-size:18px;font-weight:400;user-select:none;-webkit-tap-highlight-color:transparent;background:#2e2e2e;border:1px solid #444;flex-shrink:0; }
 .budget-arr.left{border-radius:6px 0 0 6px;}
 .budget-arr.right{border-radius:0 6px 6px 0;}
 .budget-arr:active{background:#3a3a3a;color:#e8e8e6;}
@@ -364,10 +364,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
         <input class="budget-row-label-input" type="text" value="${row.label}"
           onchange="updateBudgetRow(${row.id},'label',this.value)">
         <div class="budget-input-wrap">
-          <div class="budget-arr left" onclick="stepBudgetRow(${row.id},-10)">◀</div>
+          <div class="budget-arr left" onclick="stepBudgetRow(${row.id},-10)">−</div>
           <input class="budget-input" type="number" value="${row.value}"
             onchange="updateBudgetRow(${row.id},'value',this.value)">
-          <div class="budget-arr right" onclick="stepBudgetRow(${row.id},10)">▶</div>
+          <div class="budget-arr right" onclick="stepBudgetRow(${row.id},10)">+</div>
         </div>
         <button class="btn-row-del" onclick="removeBudgetRow('${secKey}',${row.id})">✕</button>`;
       container.appendChild(div);
