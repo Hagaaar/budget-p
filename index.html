@@ -133,6 +133,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .btn-modal-oui:active { background:#d4944a; }
 .btn-modal-non { width:100%;padding:14px;background:none;border:1px solid #444;border-radius:12px;color:#888;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent; }
 .btn-modal-non:active { color:#bbb;border-color:#666; }
+.editable-val[readonly] { border-bottom-color:transparent;cursor:default;color:#6dbf8a;pointer-events:none; }
+.report-info { font-size:12px;margin-top:5px;display:none; }
 </style>
 </head>
 <body>
@@ -149,6 +151,19 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   </div>
 </div>
 
+
+<!-- Modal report (carryover du reste réel) -->
+<div id="modal-report" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:955;display:flex;align-items:center;justify-content:center;padding:1.5rem;">
+  <div class="modal-box">
+    <div class="modal-title">Report de <span class="modal-month" id="modal-report-mois"></span></div>
+    <div class="modal-sub" id="modal-report-sub" style="margin-bottom:1.5rem;line-height:1.6"></div>
+    <div style="background:#1e2e22;border:1px solid #2d4a33;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;text-align:left">
+      <div style="font-size:13px;color:#888;margin-bottom:4px">Nouveau revenu mensuel</div>
+      <div id="modal-report-nouveau" style="font-size:28px;font-weight:700;color:#6dbf8a"></div>
+    </div>
+    <button class="btn-modal-oui" onclick="appliquerReport()">OK, on part avec ça !</button>
+  </div>
+</div>
 
 <!-- Modal confirmation générique -->
 <div id="modal-confirm" class="hidden">
@@ -234,6 +249,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       <div class="card">
         <div class="card-label">Revenu mensuel</div>
         <input class="editable-val" id="salaire" type="number" value="10900" oninput="recalc()">
+        <div id="report-info" class="report-info"></div>
       </div>
       <div class="card green-bg">
         <div class="card-label">Reste</div>
@@ -276,6 +292,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
   // ── State ─────────────────────────────────────────────────────────────────
   let entries = [], entryId = 0, budgetRowId = 0;
+  let salaireFixe = false;
+  let pendingResteReel = 0;
+  let lastReportAmount = null;
+  let lastReportMois = '';
 
   let budgetSections = {
     variable: [
@@ -311,6 +331,23 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     t.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  function updateSalaireDisplay() {
+    const input = document.getElementById('salaire');
+    const info  = document.getElementById('report-info');
+    if (salaireFixe) {
+      input.setAttribute('readonly', '');
+      if (lastReportAmount !== null && info) {
+        const signe = lastReportAmount >= 0 ? '+' : '';
+        info.style.color = lastReportAmount >= 0 ? '#6dbf8a' : '#e07070';
+        info.textContent = `dont ${signe}${fmt(lastReportAmount)} reportés de ${lastReportMois}`;
+        info.style.display = 'block';
+      }
+    } else {
+      input.removeAttribute('readonly');
+      if (info) info.style.display = 'none';
+    }
   }
 
   function showTab(id, el) {
@@ -544,7 +581,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
   function getPayload() {
     return { entries, entryId, budgetSections, budgetRowId,
-      mois: document.getElementById('mois-label').textContent, salaire: gv('salaire') };
+      mois: document.getElementById('mois-label').textContent, salaire: gv('salaire'),
+      salaireFixe, lastReportAmount, lastReportMois };
   }
 
   function applyData(d) {
@@ -554,6 +592,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     if (d.budgetRowId)    budgetRowId = parseInt(d.budgetRowId);
     if (d.mois)           document.getElementById('mois-label').textContent = d.mois;
     if (d.salaire)        document.getElementById('salaire').value = d.salaire;
+    if (d.salaireFixe !== undefined) salaireFixe = !!d.salaireFixe;
+    if (d.lastReportAmount !== undefined) lastReportAmount = d.lastReportAmount;
+    if (d.lastReportMois)  lastReportMois = d.lastReportMois;
+    updateSalaireDisplay();
   }
 
   // JSONP loader — bypasses Safari's CORS+redirect block on script.google.com
@@ -626,18 +668,47 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     document.getElementById('modal-mois').classList.remove('hidden');
   }
 
-  async function confirmerNouveauMois() {
+  function confirmerNouveauMois() {
     document.getElementById('modal-mois').classList.add('hidden');
-    const moisActuel  = document.getElementById('mois-label').textContent.trim();
-    const moisAttendu = getMoisAttendu();
+
+    const salaire    = gv('salaire');
+    const resteReel  = salaire - getFixesTotal() - getReelTotal();
+    pendingResteReel = resteReel;
+
+    const moisActuel    = document.getElementById('mois-label').textContent.trim();
+    const nouveauSalaire = salaire + resteReel;
+    const signe = resteReel >= 0 ? '+' : '';
+    const clr   = resteReel >= 0 ? '#6dbf8a' : '#e07070';
+
+    document.getElementById('modal-report-mois').textContent = moisActuel;
+    document.getElementById('modal-report-sub').innerHTML =
+      `Reste réel de ce mois&nbsp;: <strong style="color:${clr}">${signe}${fmt(resteReel)}</strong><br><br>` +
+      `Ce montant va s'ajouter à ton revenu mensuel. À partir de maintenant, le revenu est fixe et ne peut plus être modifié manuellement.`;
+    document.getElementById('modal-report-nouveau').textContent = fmt(nouveauSalaire);
+    document.getElementById('modal-report').classList.remove('hidden');
+  }
+
+  async function appliquerReport() {
+    document.getElementById('modal-report').classList.add('hidden');
+
+    const moisActuel     = document.getElementById('mois-label').textContent.trim();
+    const moisAttendu    = getMoisAttendu();
+    const currentSalaire = gv('salaire');
+    const nouveauSalaire = currentSalaire + pendingResteReel;
+
     setSyncStatus('syncing', 'Archivage…');
     showToast('Archivage de ' + moisActuel + '…', 5000);
     try {
       const url = SCRIPT_URL + '?action=archive&mois=' + encodeURIComponent(moisActuel)
                              + '&data=' + encodeURIComponent(JSON.stringify(getPayload()));
       await fetchJsonp(url);
+      lastReportAmount = pendingResteReel;
+      lastReportMois   = moisActuel;
       entries = []; entryId = 0;
+      document.getElementById('salaire').value = nouveauSalaire;
       document.getElementById('mois-label').textContent = moisAttendu;
+      salaireFixe = true;
+      updateSalaireDisplay();
       recalc();
       setSyncStatus('ok');
       showToast('✓ ' + moisActuel + ' archivé — Bienvenue en ' + moisAttendu + ' !', 4000);
