@@ -9,15 +9,15 @@
 /* ── Lock screen ── */
 #lock-screen { position:fixed;inset:0;background:#1a1a1a;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem; }
 #lock-screen.hidden { display:none; }
-.lock-title { font-size:20px;color:#999;letter-spacing:.05em; }
+.lock-title { font-size:20px;color:#c8c8c8;letter-spacing:.05em; }
 .pin-dots { display:flex;gap:14px; }
-.pin-dot { width:13px;height:13px;border-radius:50%;border:1.5px solid #555;background:transparent;transition:background .1s; }
-.pin-dot.filled { background:#e8e8e6;border-color:#e8e8e6; }
-.pin-dot.error { background:#e07070;border-color:#e07070; }
+.pin-dot { width:14px;height:14px;border-radius:50%;border:2px solid #686868;background:transparent;transition:background .1s; }
+.pin-dot.filled { background:#f0f0ee;border-color:#f0f0ee; }
+.pin-dot.error { background:#f08888;border-color:#f08888; }
 .pin-pad { display:grid;grid-template-columns:repeat(3,72px);gap:12px; }
-.pin-key { width:82px;height:82px;border-radius:50%;border:1px solid #333;background:#2e2e2e;color:#e8e8e6;font-size:30px;font-family:-apple-system,Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;user-select:none; }
-.pin-key:active { background:#444; }
-.pin-key.del { font-size:22px;color:#aaa; }
+.pin-key { width:82px;height:82px;border-radius:50%;border:1.5px solid #585858;background:#363636;color:#f0f0ee;font-size:30px;font-family:-apple-system,Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;user-select:none; }
+.pin-key:active { background:#505050; }
+.pin-key.del { font-size:22px;color:#d0d0d0; }
 .pin-key.empty { border:none;background:transparent;cursor:default; }
 @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }
 .shake { animation:shake .35s ease; }
@@ -25,44 +25,44 @@
 /* ── Base ── */
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{overflow-x:hidden;}
-body { font-family:-apple-system,Arial,sans-serif;background:#1a1a1a;color:#e8e8e6;min-height:100vh;padding:.6rem .5rem; }
+body { font-family:-apple-system,Arial,sans-serif;background:#1a1a1a;color:#f0f0ee;min-height:100vh;padding:.6rem .5rem; }
 input[type=number]{-moz-appearance:textfield;}
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
 
 /* ── Header ── */
 .header { display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem; }
-.mois-label { font-size:21px;font-weight:400;color:#ccc; }
-.sync-badge { font-size:13px;display:flex;align-items:center;gap:6px;color:#6dbf8a;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;background:#1e3a26;border:1px solid #2d5c3a;border-radius:8px;padding:7px 11px; }
+.mois-label { font-size:21px;font-weight:400;color:#e4e4e2; }
+.sync-badge { font-size:13px;display:flex;align-items:center;gap:6px;color:#7dd49c;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;background:#1e3a26;border:1px solid #3d7a4e;border-radius:8px;padding:7px 11px; }
 .sync-badge:active { opacity:.6; }
-#sync-dot { width:9px;height:9px;border-radius:50%;background:#6dbf8a;flex-shrink:0; }
-#sync-dot.syncing { background:#e8a84f;animation:pulse .8s infinite; }
-#sync-dot.ok { background:#6dbf8a; }
-#sync-dot.err { background:#e07070; }
+#sync-dot { width:9px;height:9px;border-radius:50%;background:#7dd49c;flex-shrink:0; }
+#sync-dot.syncing { background:#f0b85c;animation:pulse .8s infinite; }
+#sync-dot.ok { background:#7dd49c; }
+#sync-dot.err { background:#f08888; }
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* ── Toast ── */
-#toast { position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#2e2e2e;border:1px solid #444;border-radius:8px;padding:10px 18px;font-size:15px;color:#e8e8e6;z-index:500;transition:transform .3s ease,opacity .3s ease;opacity:0;pointer-events:none;white-space:nowrap; }
+#toast { position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#383838;border:1px solid #606060;border-radius:8px;padding:10px 18px;font-size:15px;color:#f0f0ee;z-index:500;transition:transform .3s ease,opacity .3s ease;opacity:0;pointer-events:none;white-space:nowrap; }
 #toast.show { transform:translateX(-50%) translateY(0);opacity:1; }
 
 /* ── Tabs ── */
 .tabs { display:flex;gap:6px;margin-bottom:.75rem; }
-.tab { flex:1;padding:13px 8px;border-radius:10px;border:1px solid #444;background:#2e2e2e;cursor:pointer;font-size:17px;font-weight:500;color:#aaa;text-align:center;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s; }
-.tab.active { background:#e8a84f;color:#1a1a1a;font-weight:700;border-color:#e8a84f;letter-spacing:.01em; }
+.tab { flex:1;padding:13px 8px;border-radius:10px;border:1px solid #585858;background:#2e2e2e;cursor:pointer;font-size:17px;font-weight:500;color:#d0d0d0;text-align:center;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s; }
+.tab.active { background:#f0b85c;color:#1a1a1a;font-weight:700;border-color:#f0b85c;letter-spacing:.01em; }
 .panel { display:none; }
 .panel.active { display:block; }
 
 /* ── Metric cards ── */
 .cards { display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:.75rem; }
-.card { background:#2e2e2e;border-radius:8px;padding:8px 10px;border:1px solid #383838;min-width:0; }
-.card.green-bg { background:#1e2e22;border-color:#2d4a33; }
-.card.red-bg { background:#2e1e1e;border-color:#4a2d2d; }
-.card-label { font-size:14px;color:#999;margin-bottom:4px; }
+.card { background:#2e2e2e;border-radius:8px;padding:8px 10px;border:1px solid #505050;min-width:0; }
+.card.green-bg { background:#1a2c1e;border-color:#3a5e42; }
+.card.red-bg { background:#2c1a1a;border-color:#5e3a3a; }
+.card-label { font-size:14px;color:#b8b8b8;margin-bottom:4px; }
 .card-value { font-size:22px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-.card-value.green { color:#6dbf8a; }
-.card-value.red { color:#e07070; }
-.card-value.white { color:#e8e8e6; }
-.editable-val { background:none;border:none;border-bottom:1px dashed #555;color:#e8e8e6;font-size:22px;font-weight:600;font-family:-apple-system,Arial,sans-serif;width:90px;outline:none;appearance:textfield; }
-.editable-val:focus{border-bottom-color:#999;}
+.card-value.green { color:#7dd49c; }
+.card-value.red { color:#f08888; }
+.card-value.white { color:#f0f0ee; }
+.editable-val { background:none;border:none;border-bottom:1.5px dashed #707070;color:#f0f0ee;font-size:22px;font-weight:600;font-family:-apple-system,Arial,sans-serif;width:90px;outline:none;appearance:textfield; }
+.editable-val:focus{border-bottom-color:#c0c0c0;}
 
 /* ── Entry form ── */
 .entry-form { margin-bottom:.75rem;margin-left:-.5rem;margin-right:-.5rem;padding:10px .5rem;background:#1b231b; }
@@ -70,49 +70,49 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .entry-row2 { display:grid;grid-template-columns:1fr 1fr;gap:7px; }
 .entry-form input, .entry-form select {
   padding:13px 10px;border:none;border-radius:7px;
-  background:#151d15;color:#e8e8e6;font-size:17px;
+  background:#1c281c;color:#f0f0ee;font-size:17px;
   font-family:-apple-system,Arial,sans-serif;outline:none;width:100%;
 }
 .entry-form input[type=number]{appearance:textfield;}
-.btn-add { width:100%;padding:13px;background:#2d5c3a;border:1px solid #3d7a4e;border-radius:7px;color:#e8e8e6;font-size:26px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center; }
+.btn-add { width:100%;padding:13px;background:#2d5c3a;border:1px solid #4a8a5c;border-radius:7px;color:#f0f0ee;font-size:26px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center; }
 .btn-add:active{background:#3d7a4e;}
-.btn-undo { width:100%;padding:13px;background:#3a3a3a;border:1px solid #555;border-radius:7px;color:#e8e8e6;font-size:26px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center; }
-.btn-undo:active{background:#484848;}
+.btn-undo { width:100%;padding:13px;background:#3a3a3a;border:1px solid #626262;border-radius:7px;color:#f0f0ee;font-size:26px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center; }
+.btn-undo:active{background:#505050;}
 
 /* ── Category groups ── */
 .cat-group { margin-bottom:.5rem; }
-.cat-header { display:flex;justify-content:space-between;align-items:center;padding:9px 10px;background:#242424;border-radius:6px 6px 0 0;border-bottom:1px solid #333; }
-.cat-header-name { font-size:15px;font-weight:600;color:#ccc;text-transform:uppercase;letter-spacing:.04em; }
+.cat-header { display:flex;justify-content:space-between;align-items:center;padding:9px 10px;background:#2a2a2a;border-radius:6px 6px 0 0;border-bottom:1px solid #444; }
+.cat-header-name { font-size:15px;font-weight:600;color:#e4e4e2;text-transform:uppercase;letter-spacing:.04em; }
 .cat-header-right { display:flex;gap:10px;align-items:center; }
-.cat-budget { font-size:13px;color:#777; }
+.cat-budget { font-size:13px;color:#a8a8a8; }
 .cat-reste { font-size:16px;font-weight:600; }
-.cat-reste.green{color:#6dbf8a;} .cat-reste.red{color:#e07070;}
-.entry-row-item { display:flex;align-items:center;padding:11px 10px;border-bottom:1px solid #222;background:#1e1e1e; }
+.cat-reste.green{color:#7dd49c;} .cat-reste.red{color:#f08888;}
+.entry-row-item { display:flex;align-items:center;padding:11px 10px;border-bottom:1px solid #303030;background:#1e1e1e; }
 .entry-row-item:last-child{border-bottom:none;border-radius:0 0 6px 6px;}
-.entry-desc { flex:1;font-size:16px;color:#ddd; }
-.entry-amount { font-size:16px;color:#ccc;font-variant-numeric:tabular-nums;margin-right:10px;white-space:nowrap; }
-.btn-del { background:#3a2020;border:1px solid #5a2d2d;color:#c08080;font-size:15px;cursor:pointer;padding:0;border-radius:7px;-webkit-tap-highlight-color:transparent;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
-.btn-del:active{background:#4a2828;}
-.cat-empty { padding:12px 10px;font-size:15px;color:#555;background:#1e1e1e;border-radius:0 0 6px 6px; }
+.entry-desc { flex:1;font-size:16px;color:#ebebeb; }
+.entry-amount { font-size:16px;color:#e0e0e0;font-variant-numeric:tabular-nums;margin-right:10px;white-space:nowrap; }
+.btn-del { background:#3a2020;border:1px solid #6a3535;color:#e89898;font-size:15px;cursor:pointer;padding:0;border-radius:7px;-webkit-tap-highlight-color:transparent;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.btn-del:active{background:#502828;}
+.cat-empty { padding:12px 10px;font-size:15px;color:#909090;background:#1e1e1e;border-radius:0 0 6px 6px; }
 
 /* ── Budget projeté table ── */
 .budget-section { margin-bottom:.75rem;border-radius:6px;overflow:visible; }
-.budget-section-title { font-size:15px;color:#ccc;text-transform:uppercase;letter-spacing:.04em;padding:9px 10px;background:#242424;border-radius:6px 6px 0 0;border-bottom:1px solid #333;margin-bottom:0;font-weight:700; }
-.budget-row { display:flex;justify-content:space-between;align-items:center;padding:11px 10px;border-bottom:1px solid #222;background:#1e1e1e; }
+.budget-section-title { font-size:15px;color:#e4e4e2;text-transform:uppercase;letter-spacing:.04em;padding:9px 10px;background:#2a2a2a;border-radius:6px 6px 0 0;border-bottom:1px solid #444;margin-bottom:0;font-weight:700; }
+.budget-row { display:flex;justify-content:space-between;align-items:center;padding:11px 10px;border-bottom:1px solid #303030;background:#1e1e1e; }
 .budget-row:last-child{border-bottom:none;border-radius:0 0 6px 6px;}
-.budget-row-label-input { flex:1;background:none;border:none;border-bottom:1px dashed #333;color:#d8d8d6;font-size:16px;font-family:-apple-system,Arial,sans-serif;outline:none;padding:0;min-width:0;margin-right:8px; }
-.budget-row-label-input:focus{border-bottom-color:#666;color:#e8e8e6;}
+.budget-row-label-input { flex:1;background:none;border:none;border-bottom:1.5px dashed #545454;color:#ebebeb;font-size:16px;font-family:-apple-system,Arial,sans-serif;outline:none;padding:0;min-width:0;margin-right:8px; }
+.budget-row-label-input:focus{border-bottom-color:#a0a0a0;color:#f0f0ee;}
 .budget-input-wrap { display:inline-flex;align-items:stretch; }
-.budget-input { width:58px;text-align:center;padding:6px 3px;border-top:1px solid #444;border-bottom:1px solid #444;border-left:none;border-right:none;background:#2e2e2e;color:#e8e8e6;font-size:15px;font-family:-apple-system,Arial,sans-serif;appearance:textfield;outline:none; }
-.budget-input:focus{border-top-color:#777;border-bottom-color:#777;}
-.budget-arr { width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#bbb;font-size:18px;font-weight:400;user-select:none;-webkit-tap-highlight-color:transparent;background:#2e2e2e;border:1px solid #444;flex-shrink:0; }
+.budget-input { width:58px;text-align:center;padding:6px 3px;border-top:1px solid #606060;border-bottom:1px solid #606060;border-left:none;border-right:none;background:#383838;color:#f0f0ee;font-size:15px;font-family:-apple-system,Arial,sans-serif;appearance:textfield;outline:none; }
+.budget-input:focus{border-top-color:#b0b0b0;border-bottom-color:#b0b0b0;}
+.budget-arr { width:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#d0d0d0;font-size:18px;font-weight:400;user-select:none;-webkit-tap-highlight-color:transparent;background:#383838;border:1px solid #606060;flex-shrink:0; }
 .budget-arr.left{border-radius:6px 0 0 6px;}
 .budget-arr.right{border-radius:0 6px 6px 0;}
-.budget-arr:active{background:#3a3a3a;color:#e8e8e6;}
-.btn-row-del { background:#3a2020;border:1px solid #5a2d2d;color:#c08080;font-size:14px;cursor:pointer;padding:0;margin-left:8px;border-radius:6px;-webkit-tap-highlight-color:transparent;flex-shrink:0;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center; }
-.btn-row-del:active{background:#4a2828;}
-.btn-sec-add { width:100%;padding:11px;background:none;border:1px dashed #444;border-radius:0 0 6px 6px;color:#888;font-size:15px;cursor:pointer;margin-top:0;font-family:-apple-system,Arial,sans-serif;-webkit-tap-highlight-color:transparent; }
-.btn-sec-add:active{color:#999;border-color:#666;}
+.budget-arr:active{background:#505050;color:#f0f0ee;}
+.btn-row-del { background:#3a2020;border:1px solid #6a3535;color:#e89898;font-size:14px;cursor:pointer;padding:0;margin-left:8px;border-radius:6px;-webkit-tap-highlight-color:transparent;flex-shrink:0;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center; }
+.btn-row-del:active{background:#502828;}
+.btn-sec-add { width:100%;padding:11px;background:none;border:1px dashed #606060;border-radius:0 0 6px 6px;color:#b8b8b8;font-size:15px;cursor:pointer;margin-top:0;font-family:-apple-system,Arial,sans-serif;-webkit-tap-highlight-color:transparent; }
+.btn-sec-add:active{color:#e8e8e8;border-color:#909090;}
 
 /* ── Amount step buttons ── */
 .amount-input-wrap { display:flex;align-items:center;gap:5px;width:100%; }
@@ -125,15 +125,15 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 /* ── Nouveau mois modal ── */
 #modal-mois { position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:950;display:flex;align-items:center;justify-content:center;padding:1.5rem; }
 #modal-mois.hidden { display:none; }
-.modal-box { background:#242424;border-radius:18px;border:1px solid #555;padding:2rem 1.5rem;max-width:340px;width:100%;text-align:center; }
-.modal-title { font-size:22px;font-weight:700;color:#e8e8e6;margin-bottom:.6rem;line-height:1.35; }
-.modal-month { color:#e8a84f; }
-.modal-sub { font-size:15px;color:#888;margin-bottom:2rem; }
-.btn-modal-oui { width:100%;padding:16px;background:#e8a84f;border:none;border-radius:12px;color:#1a1a1a;font-size:19px;font-weight:700;cursor:pointer;margin-bottom:12px;-webkit-tap-highlight-color:transparent; }
-.btn-modal-oui:active { background:#d4944a; }
-.btn-modal-non { width:100%;padding:14px;background:none;border:1px solid #444;border-radius:12px;color:#888;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent; }
-.btn-modal-non:active { color:#bbb;border-color:#666; }
-.editable-val[readonly] { border-bottom-color:transparent;cursor:default;color:#6dbf8a;pointer-events:none; }
+.modal-box { background:#282828;border-radius:18px;border:1px solid #707070;padding:2rem 1.5rem;max-width:340px;width:100%;text-align:center; }
+.modal-title { font-size:22px;font-weight:700;color:#f0f0ee;margin-bottom:.6rem;line-height:1.35; }
+.modal-month { color:#f0b85c; }
+.modal-sub { font-size:15px;color:#b0b0b0;margin-bottom:2rem; }
+.btn-modal-oui { width:100%;padding:16px;background:#f0b85c;border:none;border-radius:12px;color:#1a1a1a;font-size:19px;font-weight:700;cursor:pointer;margin-bottom:12px;-webkit-tap-highlight-color:transparent; }
+.btn-modal-oui:active { background:#d4a44a; }
+.btn-modal-non { width:100%;padding:14px;background:none;border:1px solid #686868;border-radius:12px;color:#c0c0c0;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent; }
+.btn-modal-non:active { color:#f0f0ee;border-color:#909090; }
+.editable-val[readonly] { border-bottom-color:transparent;cursor:default;color:#7dd49c;pointer-events:none; }
 .report-info { font-size:12px;margin-top:5px;display:none; }
 </style>
 </head>
@@ -157,9 +157,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   <div class="modal-box">
     <div class="modal-title">Report de <span class="modal-month" id="modal-report-mois"></span></div>
     <div class="modal-sub" id="modal-report-sub" style="margin-bottom:1.5rem;line-height:1.6"></div>
-    <div style="background:#1e2e22;border:1px solid #2d4a33;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;text-align:left">
-      <div style="font-size:13px;color:#888;margin-bottom:4px">Nouveau revenu mensuel</div>
-      <div id="modal-report-nouveau" style="font-size:28px;font-weight:700;color:#6dbf8a"></div>
+    <div style="background:#1a2c1e;border:1px solid #3a5e42;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;text-align:left">
+      <div style="font-size:13px;color:#b0b0b0;margin-bottom:4px">Nouveau revenu mensuel</div>
+      <div id="modal-report-nouveau" style="font-size:28px;font-weight:700;color:#7dd49c"></div>
     </div>
     <button class="btn-modal-oui" onclick="appliquerReport()">OK, on part avec ça !</button>
   </div>
@@ -195,7 +195,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   <!-- Header -->
   <div class="header">
     <div style="display:flex;align-items:baseline;gap:6px">
-      <span style="font-size:22px;font-weight:700;color:#e8e8e6;letter-spacing:.02em">BUDGET P.</span>
+      <span style="font-size:22px;font-weight:700;color:#f0f0ee;letter-spacing:.02em">BUDGET P.</span>
       <span class="mois-label" id="mois-label">Mai 2026</span>
     </div>
     <div class="sync-badge" onclick="forceSync()" title="Appuyer pour synchroniser"><span id="sync-label">—</span><span id="sync-dot"></span></div>
@@ -340,7 +340,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       input.setAttribute('readonly', '');
       if (lastReportAmount !== null && info) {
         const signe = lastReportAmount >= 0 ? '+' : '';
-        info.style.color = lastReportAmount >= 0 ? '#6dbf8a' : '#e07070';
+        info.style.color = lastReportAmount >= 0 ? '#7dd49c' : '#f08888';
         info.textContent = `dont ${signe}${fmt(lastReportAmount)} reportés de ${lastReportMois}`;
         info.style.display = 'block';
       }
@@ -565,7 +565,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       'Annuler cette saisie ?',
       `${fmt(last.montant)}  —  ${last.desc || '—'}  (${last.cat})`,
       'Oui, annuler',
-      '#e8a84f'
+      '#f0b85c'
     );
   }
 
@@ -678,7 +678,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     const moisActuel    = document.getElementById('mois-label').textContent.trim();
     const nouveauSalaire = salaire + resteReel;
     const signe = resteReel >= 0 ? '+' : '';
-    const clr   = resteReel >= 0 ? '#6dbf8a' : '#e07070';
+    const clr   = resteReel >= 0 ? '#7dd49c' : '#f08888';
 
     document.getElementById('modal-report-mois').textContent = moisActuel;
     document.getElementById('modal-report-sub').innerHTML =
