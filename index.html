@@ -671,11 +671,21 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   function confirmerNouveauMois() {
     document.getElementById('modal-mois').classList.add('hidden');
 
+    // Le report de reste s'active uniquement à partir de juillet 2026
+    const now = new Date();
+    const reportActif = now.getFullYear() > 2026 ||
+      (now.getFullYear() === 2026 && now.getMonth() >= 6);
+
+    if (!reportActif) {
+      _archiverSansReport();
+      return;
+    }
+
     const salaire    = gv('salaire');
     const resteReel  = salaire - getFixesTotal() - getReelTotal();
     pendingResteReel = resteReel;
 
-    const moisActuel    = document.getElementById('mois-label').textContent.trim();
+    const moisActuel     = document.getElementById('mois-label').textContent.trim();
     const nouveauSalaire = salaire + resteReel;
     const signe = resteReel >= 0 ? '+' : '';
     const clr   = resteReel >= 0 ? '#7dd49c' : '#f08888';
@@ -686,6 +696,27 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       `Ce montant va s'ajouter à ton revenu mensuel. À partir de maintenant, le revenu est fixe et ne peut plus être modifié manuellement.`;
     document.getElementById('modal-report-nouveau').textContent = fmt(nouveauSalaire);
     document.getElementById('modal-report').classList.remove('hidden');
+  }
+
+  async function _archiverSansReport() {
+    const moisActuel  = document.getElementById('mois-label').textContent.trim();
+    const moisAttendu = getMoisAttendu();
+    setSyncStatus('syncing', 'Archivage…');
+    showToast('Archivage de ' + moisActuel + '…', 5000);
+    try {
+      const url = SCRIPT_URL + '?action=archive&mois=' + encodeURIComponent(moisActuel)
+                             + '&data=' + encodeURIComponent(JSON.stringify(getPayload()));
+      await fetchJsonp(url);
+      entries = []; entryId = 0;
+      document.getElementById('mois-label').textContent = moisAttendu;
+      recalc();
+      setSyncStatus('ok');
+      showToast('✓ ' + moisActuel + ' archivé — Bienvenue en ' + moisAttendu + ' !', 4000);
+    } catch(err) {
+      setSyncStatus('err');
+      localStorage.setItem('bp_archive_bak_' + moisActuel, JSON.stringify(getPayload()));
+      showToast('Archivage échoué — copie locale conservée', 5000);
+    }
   }
 
   async function appliquerReport() {
