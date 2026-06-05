@@ -81,12 +81,17 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 /* ── Category groups ── */
 .cat-group { margin-bottom:.5rem; }
-.cat-header { display:flex;justify-content:space-between;align-items:center;padding:9px 10px;background:#2a2a2a;border-radius:6px 6px 0 0;border-bottom:1px solid #444; }
+.cat-header { display:flex;justify-content:space-between;align-items:center;padding:9px 10px;background:#2a2a2a;border-radius:6px 6px 0 0;border-bottom:1px solid #444;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent; }
+.cat-group:not(.open) .cat-header { border-radius:6px;border-bottom:none; }
 .cat-header-name { font-size:15px;font-weight:600;color:#e4e4e2;text-transform:uppercase;letter-spacing:.04em; }
 .cat-header-right { display:flex;gap:10px;align-items:center; }
 .cat-budget { font-size:13px;color:#a8a8a8; }
 .cat-reste { font-size:16px;font-weight:600; }
 .cat-reste.green{color:#7dd49c;} .cat-reste.red{color:#f08888;}
+.cat-chevron { font-size:11px;color:#888;transition:transform .2s;flex-shrink:0; }
+.cat-group.open .cat-chevron { transform:rotate(90deg); }
+.cat-body { display:none; }
+.cat-group.open .cat-body { display:block; }
 .entry-row-item { display:flex;align-items:center;padding:11px 10px;border-bottom:1px solid #303030;background:#1e1e1e; }
 .entry-row-item:last-child{border-bottom:none;border-radius:0 0 6px 6px;}
 .entry-desc { flex:1;font-size:16px;color:#ebebeb; }
@@ -94,10 +99,22 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .btn-del { background:#3a2020;border:1px solid #6a3535;color:#e89898;font-size:15px;cursor:pointer;padding:0;border-radius:7px;-webkit-tap-highlight-color:transparent;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
 .btn-del:active{background:#502828;}
 .cat-empty { padding:12px 10px;font-size:15px;color:#909090;background:#1e1e1e;border-radius:0 0 6px 6px; }
+/* ── Fixed rows (in dépenses réel) ── */
+.fix-row { display:flex;align-items:center;padding:11px 10px;border-bottom:1px solid #303030;background:#1e1e1e; }
+.fix-row:last-child { border-bottom:none;border-radius:0 0 6px 6px; }
+.fix-check { width:22px;height:22px;margin-right:12px;accent-color:#7dd49c;flex-shrink:0;cursor:pointer; }
+.fix-label { flex:1;font-size:16px;color:#ebebeb; }
+.fix-label.done { opacity:.45;text-decoration:line-through; }
+.fix-amount { font-size:16px;color:#e0e0e0;font-variant-numeric:tabular-nums; }
 
 /* ── Budget projeté table ── */
 .budget-section { margin-bottom:.75rem;border-radius:6px;overflow:visible; }
-.budget-section-title { font-size:15px;color:#e4e4e2;text-transform:uppercase;letter-spacing:.04em;padding:9px 10px;background:#2a2a2a;border-radius:6px 6px 0 0;border-bottom:1px solid #444;margin-bottom:0;font-weight:700; }
+.budget-section-title { font-size:15px;color:#e4e4e2;text-transform:uppercase;letter-spacing:.04em;padding:9px 10px;background:#2a2a2a;border-radius:6px 6px 0 0;border-bottom:1px solid #444;margin-bottom:0;font-weight:700;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;display:flex;justify-content:space-between;align-items:center; }
+.budget-section:not(.open) .budget-section-title { border-radius:6px;border-bottom:none; }
+.budget-chevron { font-size:11px;color:#888;transition:transform .2s; }
+.budget-section.open .budget-chevron { transform:rotate(90deg); }
+.budget-section-body { display:none; }
+.budget-section.open .budget-section-body { display:block; }
 .budget-row { display:flex;justify-content:space-between;align-items:center;padding:11px 10px;border-bottom:1px solid #303030;background:#1e1e1e; }
 .budget-row:last-child{border-bottom:none;border-radius:0 0 6px 6px;}
 .budget-row-label-input { flex:1;background:none;border:none;border-bottom:1.5px dashed #545454;color:#ebebeb;font-size:16px;font-family:-apple-system,Arial,sans-serif;outline:none;padding:0;min-width:0;margin-right:8px; }
@@ -263,16 +280,20 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     <span id="b-fixes" style="display:none"></span>
     <span id="b-variable" style="display:none"></span>
 
-    <div class="budget-section">
-      <div class="budget-section-title">Dépenses variables budgétées</div>
-      <div id="sec-variable"></div>
-      <button class="btn-sec-add" onclick="addBudgetRow('variable')">+ Ajouter une ligne</button>
+    <div class="budget-section" id="bs-variable">
+      <div class="budget-section-title" onclick="toggleBudgetSection('bs-variable')">Dépenses variables budgétées<span class="budget-chevron">▶</span></div>
+      <div class="budget-section-body">
+        <div id="sec-variable"></div>
+        <button class="btn-sec-add" onclick="addBudgetRow('variable')">+ Ajouter une ligne</button>
+      </div>
     </div>
 
-    <div class="budget-section">
-      <div class="budget-section-title">Charges fixes</div>
-      <div id="sec-fixes"></div>
-      <button class="btn-sec-add" onclick="addBudgetRow('fixes')">+ Ajouter une ligne</button>
+    <div class="budget-section" id="bs-fixes">
+      <div class="budget-section-title" onclick="toggleBudgetSection('bs-fixes')">Charges fixes<span class="budget-chevron">▶</span></div>
+      <div class="budget-section-body">
+        <div id="sec-fixes"></div>
+        <button class="btn-sec-add" onclick="addBudgetRow('fixes')">+ Ajouter une ligne</button>
+      </div>
     </div>
   </div>
 </div>
@@ -300,6 +321,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   let pendingResteReel = 0;
   let lastReportAmount = null;
   let lastReportMois = '';
+  let fixedChecked = {}; // { [fix.id]: boolean }
 
   let budgetSections = {
     variable: [
@@ -362,7 +384,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   }
 
   // ── Calculs ───────────────────────────────────────────────────────────────
-  function getFixesTotal()    { return budgetSections.fixes.reduce((s,r) => s+r.value, 0); }
+  function getFixesTotal()        { return budgetSections.fixes.reduce((s,r) => s+r.value, 0); }
+  function getCheckedFixesTotal() { return budgetSections.fixes.reduce((s,r) => s+(fixedChecked[r.id]?r.value:0), 0); }
   function getVariableTotal() { return budgetSections.variable.reduce((s,r) => s+r.value, 0); }
   function getVariableBudgetForCat(cat) {
     const row = budgetSections.variable.find(r => r.label.trim().toLowerCase() === cat.trim().toLowerCase());
@@ -371,20 +394,30 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   function getReelTotal()       { return entries.reduce((s,e) => s+e.montant, 0); }
   function getSpentByCat(cat)   { return entries.filter(e => e.cat?.trim().toLowerCase() === cat.trim().toLowerCase()).reduce((s,e) => s+e.montant, 0); }
 
+  function toggleFix(id, checked) {
+    fixedChecked[id] = checked;
+    recalc();
+  }
+
+  function toggleBudgetSection(sectionId) {
+    document.getElementById(sectionId).classList.toggle('open');
+  }
+
   function recalc() {
     const fixes    = getFixesTotal();
     const variable = getVariableTotal();
     const salaire  = gv('salaire');
     const reste    = salaire - fixes - variable;
-    const reelTotal  = getReelTotal();
-    const resteReel  = salaire - fixes - reelTotal;
+    const reelTotal      = getReelTotal();
+    const checkedFixes   = getCheckedFixesTotal();
+    const resteReel      = salaire - checkedFixes - reelTotal;
 
     document.getElementById('b-fixes').textContent    = fmt(fixes);
     document.getElementById('b-variable').textContent = fmt(variable);
     document.getElementById('b-reste').textContent    = fmt(reste);
     document.getElementById('b-reste').className      = 'card-value ' + (reste >= 0 ? 'green' : 'red');
 
-    document.getElementById('r-reel').textContent       = fmt(reelTotal);
+    document.getElementById('r-reel').textContent       = fmt(checkedFixes + reelTotal);
     document.getElementById('r-reste-reel').textContent = fmt(resteReel);
     document.getElementById('r-reste-reel').className   = 'card-value ' + (resteReel >= 0 ? 'green' : 'red');
     document.getElementById('r-reste-reel').closest('.card').className = 'card ' + (resteReel >= 0 ? 'green-bg' : 'red-bg');
@@ -465,6 +498,36 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   function refreshCatList() {
     const container = document.getElementById('cat-list');
     container.innerHTML = '';
+
+    // ── Section charges fixes (toujours en haut) ──
+    const checkedTotal = getCheckedFixesTotal();
+    const fixGrp = document.createElement('div');
+    fixGrp.className = 'cat-group'; // fermé par défaut
+    const fixClr = checkedTotal > 0 ? 'red' : 'green';
+    fixGrp.innerHTML = `
+      <div class="cat-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="cat-header-name">Charges fixes</span>
+        <div class="cat-header-right">
+          <span class="cat-reste ${fixClr}">${checkedTotal > 0 ? '−' : ''}${fmt(checkedTotal)}</span>
+          <span class="cat-chevron">▶</span>
+        </div>
+      </div>`;
+    const fixBody = document.createElement('div');
+    fixBody.className = 'cat-body';
+    budgetSections.fixes.forEach(fix => {
+      const isChecked = !!fixedChecked[fix.id];
+      const row = document.createElement('div');
+      row.className = 'fix-row';
+      row.innerHTML = `
+        <input type="checkbox" class="fix-check" ${isChecked ? 'checked' : ''} onchange="toggleFix(${fix.id},this.checked)">
+        <span class="fix-label${isChecked ? ' done' : ''}">${fix.label}</span>
+        <span class="fix-amount">${fmt(fix.value)}</span>`;
+      fixBody.appendChild(row);
+    });
+    fixGrp.appendChild(fixBody);
+    container.appendChild(fixGrp);
+
+    // ── Catégories variables ──
     getCats().forEach(cat => {
       const budget = getVariableBudgetForCat(cat);
       const spent  = getSpentByCat(cat);
@@ -480,18 +543,22 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       });
 
       const grp = document.createElement('div');
-      grp.className = 'cat-group';
+      grp.className = 'cat-group'; // fermé par défaut
       const clr = reste >= 0 ? 'green' : 'red';
       grp.innerHTML = `
-        <div class="cat-header">
+        <div class="cat-header" onclick="this.parentElement.classList.toggle('open')">
           <span class="cat-header-name">${cat}</span>
           <div class="cat-header-right">
             <span class="cat-reste ${clr}">${reste >= 0 ? '+' : ''}${fmt(reste)}</span>
+            <span class="cat-chevron">▶</span>
           </div>
         </div>`;
 
+      const body = document.createElement('div');
+      body.className = 'cat-body';
+
       if (Object.keys(grouped).length === 0) {
-        grp.innerHTML += `<div class="cat-empty">Aucune dépense</div>`;
+        body.innerHTML = `<div class="cat-empty">Aucune dépense</div>`;
       } else {
         Object.values(grouped).forEach(g => {
           const row = document.createElement('div');
@@ -501,9 +568,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
             <span class="entry-desc">${g.desc}${badge}</span>
             <span class="entry-amount">${fmt(g.total)}</span>
             <button class="btn-del" onclick="removeGroup('${cat}','${g.desc.replace(/'/g,"\\'")}')">✕</button>`;
-          grp.appendChild(row);
+          body.appendChild(row);
         });
       }
+      grp.appendChild(body);
       container.appendChild(grp);
     });
   }
@@ -586,7 +654,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   function getPayload() {
     return { entries, entryId, budgetSections, budgetRowId,
       mois: document.getElementById('mois-label').textContent, salaire: gv('salaire'),
-      salaireFixe, lastReportAmount, lastReportMois };
+      salaireFixe, lastReportAmount, lastReportMois, fixedChecked };
   }
 
   function applyData(d) {
@@ -599,6 +667,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     if (d.salaireFixe !== undefined) salaireFixe = !!d.salaireFixe;
     if (d.lastReportAmount !== undefined) lastReportAmount = d.lastReportAmount;
     if (d.lastReportMois)  lastReportMois = d.lastReportMois;
+    if (d.fixedChecked)    fixedChecked = d.fixedChecked;
     updateSalaireDisplay();
   }
 
@@ -686,7 +755,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     }
 
     const salaire    = gv('salaire');
-    const resteReel  = salaire - getFixesTotal() - getReelTotal();
+    const resteReel  = salaire - getCheckedFixesTotal() - getReelTotal();
     pendingResteReel = resteReel;
 
     const moisActuel     = document.getElementById('mois-label').textContent.trim();
@@ -712,6 +781,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
                              + '&data=' + encodeURIComponent(JSON.stringify(getPayload()));
       await fetchJsonp(url);
       entries = []; entryId = 0;
+      fixedChecked = {};
       document.getElementById('mois-label').textContent = moisAttendu;
       recalc();
       setSyncStatus('ok');
@@ -740,6 +810,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       lastReportAmount = pendingResteReel;
       lastReportMois   = moisActuel;
       entries = []; entryId = 0;
+      fixedChecked = {};
       document.getElementById('salaire').value = nouveauSalaire;
       document.getElementById('mois-label').textContent = moisAttendu;
       salaireFixe = true;
