@@ -497,12 +497,20 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   // ── Rendu liste réel ──────────────────────────────────────────────────────
   function refreshCatList() {
     const container = document.getElementById('cat-list');
+
+    // Mémoriser quels accordéons sont ouverts avant de reconstruire
+    const openGroups = new Set();
+    container.querySelectorAll('.cat-group.open').forEach(g => {
+      const name = g.querySelector('.cat-header-name')?.textContent;
+      if (name) openGroups.add(name);
+    });
+
     container.innerHTML = '';
 
     // ── Section charges fixes (toujours en haut) ──
     const checkedTotal = getCheckedFixesTotal();
     const fixGrp = document.createElement('div');
-    fixGrp.className = 'cat-group'; // fermé par défaut
+    fixGrp.className = 'cat-group' + (openGroups.has('Charges fixes') ? ' open' : '');
     const fixClr = checkedTotal > 0 ? 'red' : 'green';
     fixGrp.innerHTML = `
       <div class="cat-header" onclick="this.parentElement.classList.toggle('open')">
@@ -543,7 +551,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       });
 
       const grp = document.createElement('div');
-      grp.className = 'cat-group'; // fermé par défaut
+      grp.className = 'cat-group' + (openGroups.has(cat) ? ' open' : '');
       const clr = reste >= 0 ? 'green' : 'red';
       grp.innerHTML = `
         <div class="cat-header" onclick="this.parentElement.classList.toggle('open')">
