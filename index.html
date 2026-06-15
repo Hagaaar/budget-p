@@ -156,11 +156,35 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .btn-modal-non:active { color:#f0f0ee;border-color:#909090; }
 .editable-val[readonly] { border-bottom-color:transparent;cursor:default;color:#7dd49c;pointer-events:none; }
 .report-info { font-size:12px;margin-top:5px;display:none; }
+
+/* ── Guard anti-écrasement banner ── */
+.guard-banner { background:#3a1a1a;border:1.5px solid #c0392b;border-radius:10px;padding:12px 14px;font-size:14px;color:#f08888;margin-bottom:.75rem;line-height:1.5;display:flex;align-items:flex-start;gap:10px; }
+.guard-banner.hidden { display:none; }
+.guard-banner-icon { font-size:20px;flex-shrink:0;margin-top:-1px; }
+.guard-banner-text { flex:1; }
+.guard-retry-btn { margin-top:8px;padding:8px 14px;background:#c0392b;border:none;border-radius:7px;color:#fff;font-size:13px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:block;font-family:-apple-system,Arial,sans-serif; }
+.guard-retry-btn:active { background:#a0271e; }
+
+/* ── Backup bar ── */
+.backup-bar { display:flex;gap:7px;margin-top:1.2rem;margin-bottom:.5rem; }
+.btn-backup { flex:1;padding:12px 8px;background:#2a2a2a;border:1px solid #505050;border-radius:8px;color:#b8b8b8;font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent;font-family:-apple-system,Arial,sans-serif;text-align:center; }
+.btn-backup:active { background:#3a3a3a;color:#f0f0ee; }
 </style>
 </head>
 <body>
 
 <div id="toast"></div>
+
+<!-- Guard anti-écrasement -->
+<div id="guard-banner" class="guard-banner hidden" style="position:relative;z-index:10;margin:.6rem .5rem 0">
+  <span class="guard-banner-icon">🔒</span>
+  <div class="guard-banner-text">
+    <strong>Données cloud non vérifiées</strong><br>
+    La connexion au cloud a échoué au démarrage et l'appareil n'avait pas de données locales.<br>
+    Les modifications sont sauvegardées <em>localement uniquement</em> pour éviter d'écraser des données existantes.
+    <button class="guard-retry-btn" onclick="retryGuardSync()">Réessayer la connexion</button>
+  </div>
+</div>
 
 <!-- Nouveau mois modal -->
 <div id="modal-mois" class="hidden">
@@ -295,6 +319,13 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
         <button class="btn-sec-add" onclick="addBudgetRow('fixes')">+ Ajouter une ligne</button>
       </div>
     </div>
+  </div>
+
+  <!-- Backup bar -->
+  <div class="backup-bar">
+    <button class="btn-backup" onclick="exportBackup()">↓ Exporter backup</button>
+    <label class="btn-backup" for="import-file-input" style="cursor:pointer">↑ Importer backup</label>
+    <input type="file" id="import-file-input" accept=".json" onchange="handleImportFile(this)" style="display:none">
   </div>
 </div>
 
@@ -652,6 +683,39 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   // ── Sync ─────────────────────────────────────────────────────────────────
   const STORAGE_KEY = 'bp_data';
 
+  // Guard anti-écrasement : bloque le sync cloud si Google a échoué
+  // ET localStorage était vide au démarrage (appareil inconnu ou cache vidé)
+  let _safeToCloudSave = true;
+
+  function setGuardActive(active) {
+    _safeToCloudSave = !active;
+    const banner = document.getElementById('guard-banner');
+    if (banner) banner.classList.toggle('hidden', !active);
+    if (active) setSyncStatus('err', '⚠ Cloud bloqué');
+  }
+
+  async function retryGuardSync() {
+    setSyncStatus('syncing');
+    try {
+      const d = await fetchJsonp(SCRIPT_URL);
+      if (d && Object.keys(d).length > 0) {
+        const localBk = localStorage.getItem(STORAGE_KEY);
+        if (!localBk || (Object.keys(JSON.parse(localBk) || {}).length === 0)) {
+          applyData(d);
+          renderAllBudgetSections();
+          refreshCatSelect();
+          recalc();
+        }
+      }
+      setGuardActive(false);
+      setSyncStatus('ok');
+      showToast('Connexion rétablie — données récupérées');
+    } catch(e) {
+      setSyncStatus('err', '⚠ Cloud bloqué');
+      showToast('Connexion échouée — réessayez plus tard');
+    }
+  }
+
   function setSyncStatus(state, label) {
     const dot = document.getElementById('sync-dot');
     const lbl = document.getElementById('sync-label');
@@ -696,6 +760,11 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   let saveTimer = null;
   function save() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(getPayload()));
+    if (!_safeToCloudSave) {
+      // Guard actif : on sauvegarde localement mais on n'écrase pas le cloud
+      setSyncStatus('err', '⚠ Cloud bloqué');
+      return;
+    }
     clearTimeout(saveTimer);
     saveTimer = setTimeout(async () => {
       setSyncStatus('syncing');
@@ -709,18 +778,29 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
   async function load() {
     setSyncStatus('syncing');
+    const localBk = localStorage.getItem(STORAGE_KEY);
     try {
       const d = await fetchJsonp(SCRIPT_URL);
-      if (d && Object.keys(d).length > 0) { applyData(d); setSyncStatus('ok'); }
-      else {
-        const bk = localStorage.getItem(STORAGE_KEY);
-        if (bk) applyData(JSON.parse(bk));
+      if (d && Object.keys(d).length > 0) {
+        applyData(d);
         setSyncStatus('ok');
+        setGuardActive(false);
+      } else {
+        if (localBk) applyData(JSON.parse(localBk));
+        setSyncStatus('ok');
+        setGuardActive(false);
       }
     } catch(e) {
-      const bk = localStorage.getItem(STORAGE_KEY);
-      if (bk) { try { applyData(JSON.parse(bk)); } catch(_) {} }
-      setSyncStatus('err');
+      if (localBk) {
+        try { applyData(JSON.parse(localBk)); } catch(_) {}
+        setSyncStatus('err');
+        setGuardActive(false); // localStorage est la source de vérité, pas de danger
+      } else {
+        // DANGER : Google inaccessible ET pas de données locales
+        // → on bloque tout sync cloud pour éviter d'écraser des données existantes
+        setSyncStatus('err');
+        setGuardActive(true);
+      }
     }
   }
 
@@ -866,6 +946,69 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   function updateDots() {
     for (let i = 0; i < PIN_LEN; i++)
       document.getElementById('d'+i).classList.toggle('filled', i < pinEntry.length);
+  }
+
+  // ── Backup export / import ────────────────────────────────────────────────
+  function exportBackup() {
+    const archives = {};
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('bp_archive_bak_'))
+      .forEach(k => { try { archives[k] = JSON.parse(localStorage.getItem(k)); } catch(_) {} });
+
+    const backup = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      current: getPayload(),
+      archives
+    };
+
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'budget-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Backup téléchargé');
+  }
+
+  function handleImportFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    input.value = '';
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const backup = JSON.parse(e.target.result);
+        const data = backup.current || backup;
+        if (!data.entries && !data.budgetSections) { showToast('Fichier invalide'); return; }
+        const dateStr = backup.exportedAt
+          ? new Date(backup.exportedAt).toLocaleDateString('fr-FR')
+          : 'inconnu';
+        pendingAction = () => {
+          applyData(data);
+          if (backup.archives) {
+            Object.entries(backup.archives).forEach(([k, v]) => {
+              try { localStorage.setItem(k, JSON.stringify(v)); } catch(_) {}
+            });
+          }
+          setGuardActive(false);
+          renderAllBudgetSections();
+          refreshCatSelect();
+          recalc();
+          save();
+          showToast('Backup du ' + dateStr + ' restauré');
+        };
+        showConfirm(
+          '', 'Restaurer ce backup ?',
+          'Backup du ' + dateStr + ' — toutes les données actuelles seront remplacées.',
+          'Oui, restaurer', '#c0392b'
+        );
+      } catch(_) { showToast('Erreur de lecture du fichier'); }
+    };
+    reader.readAsText(file);
   }
 
   function initApp() {
