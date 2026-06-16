@@ -332,6 +332,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <script>
   // ── Google Apps Script ───────────────────────────────────────────────────
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxltvVNrZS73M9rRsa77BGebArGk68yllQf7tInWprLvIDyVsvxwBTvq7YMPVbeO2CAfQ/exec';
+  const SYNC_KEY   = 'dc8d372a5da56a7620f68626dc2fdb0d';
 
   // ── PIN (SHA-256 de 48960) ────────────────────────────────────────────────
   const PIN_HASH = 'c9f1e824ac8f66e7b43c117cb0e7fe182d3a30fe0f209345d7c47d0243e5aef5';
@@ -769,7 +770,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     saveTimer = setTimeout(async () => {
       setSyncStatus('syncing');
       try {
-        const url = SCRIPT_URL + '?action=save&data=' + encodeURIComponent(JSON.stringify(getPayload()));
+        const url = SCRIPT_URL + '?action=save&key=' + SYNC_KEY + '&data=' + encodeURIComponent(JSON.stringify(getPayload()));
         await fetchJsonp(url);
         setSyncStatus('ok');
       } catch(e) { setSyncStatus('err'); }
@@ -865,7 +866,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     setSyncStatus('syncing', 'Archivage…');
     showToast('Archivage de ' + moisActuel + '…', 5000);
     try {
-      const url = SCRIPT_URL + '?action=archive&mois=' + encodeURIComponent(moisActuel)
+      const url = SCRIPT_URL + '?action=archive&key=' + SYNC_KEY + '&mois=' + encodeURIComponent(moisActuel)
                              + '&data=' + encodeURIComponent(JSON.stringify(getPayload()));
       await fetchJsonp(url);
       entries = []; entryId = 0;
@@ -892,7 +893,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     setSyncStatus('syncing', 'Archivage…');
     showToast('Archivage de ' + moisActuel + '…', 5000);
     try {
-      const url = SCRIPT_URL + '?action=archive&mois=' + encodeURIComponent(moisActuel)
+      const url = SCRIPT_URL + '?action=archive&key=' + SYNC_KEY + '&mois=' + encodeURIComponent(moisActuel)
                              + '&data=' + encodeURIComponent(JSON.stringify(getPayload()));
       await fetchJsonp(url);
       lastReportAmount = pendingResteReel;
