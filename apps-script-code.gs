@@ -1,5 +1,6 @@
 const SHEET_NAME    = 'Données';
 const ARCHIVE_SHEET = 'Archives';
+const JOURNAL_SHEET = 'Journal';
 const SYNC_KEY       = 'dc8d372a5da56a7620f68626dc2fdb0d';
 
 function doGet(e) {
@@ -16,9 +17,27 @@ function doGet(e) {
       : respond(s, ContentService.MimeType.JSON);
   }
 
-  const isWrite = e.parameter.action === 'save' || e.parameter.action === 'archive';
+  const isWrite = e.parameter.action === 'save' || e.parameter.action === 'archive' || e.parameter.action === 'logEntry';
   if (isWrite && e.parameter.key !== SYNC_KEY) {
     return jsonp({ ok: false, error: 'unauthorized' });
+  }
+
+  if (e.parameter.action === 'logEntry') {
+    let journal = ss.getSheetByName(JOURNAL_SHEET);
+    if (!journal) {
+      journal = ss.insertSheet(JOURNAL_SHEET);
+      journal.appendRow(['Horodatage', 'Mois', 'Action', 'ID', 'Montant', 'Description', 'Catégorie']);
+    }
+    journal.appendRow([
+      new Date().toISOString(),
+      e.parameter.mois,
+      e.parameter.entryAction,
+      e.parameter.id,
+      e.parameter.montant,
+      e.parameter.desc,
+      e.parameter.cat
+    ]);
+    return jsonp({ ok: true });
   }
 
   if (e.parameter.action === 'save') {

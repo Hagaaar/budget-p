@@ -638,11 +638,12 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   }
 
   function removeGroup(cat, desc) {
-    const total = entries
-      .filter(e => e.cat?.trim().toLowerCase() === cat.trim().toLowerCase() && (e.desc||'—').trim() === desc)
-      .reduce((s, e) => s + e.montant, 0);
+    const toRemove = entries
+      .filter(e => e.cat?.trim().toLowerCase() === cat.trim().toLowerCase() && (e.desc||'—').trim() === desc);
+    const total = toRemove.reduce((s, e) => s + e.montant, 0);
     pendingAction = () => {
       entries = entries.filter(e => !(e.cat?.trim().toLowerCase() === cat.trim().toLowerCase() && (e.desc||'—').trim() === desc));
+      toRemove.forEach(e => logEntry('delete', e));
       recalc();
     };
     showConfirm('', 'Supprimer cette dépense ?', `${desc}  —  ${fmt(total)}`, 'Oui, supprimer', '#c0392b');
@@ -653,7 +654,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     const desc    = document.getElementById('e-desc').value.trim();
     const cat     = document.getElementById('e-cat').value;
     if (!montant || montant <= 0) return;
-    entries.push({ id:++entryId, montant, desc, cat });
+    const entry = { id:++entryId, montant, desc, cat };
+    entries.push(entry);
+    logEntry('add', entry);
     document.getElementById('e-montant').value = '';
     document.getElementById('e-desc').value    = '';
     recalc();
@@ -670,6 +673,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     const last = entries[entries.length - 1];
     pendingAction = () => {
       entries.pop();
+      logEntry('delete', last);
       recalc();
     };
     showConfirm(
@@ -756,6 +760,19 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       el.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb + '&t=' + Date.now();
       document.head.appendChild(el);
     });
+  }
+
+  // Journal append-only (jamais écrasé) — traçabilité de chaque dépense saisie/supprimée
+  function logEntry(entryAction, entry) {
+    const moisActuel = document.getElementById('mois-label').textContent.trim();
+    const url = SCRIPT_URL + '?action=logEntry&key=' + SYNC_KEY
+      + '&mois=' + encodeURIComponent(moisActuel)
+      + '&entryAction=' + encodeURIComponent(entryAction)
+      + '&id=' + encodeURIComponent(entry.id)
+      + '&montant=' + encodeURIComponent(entry.montant)
+      + '&desc=' + encodeURIComponent(entry.desc || '')
+      + '&cat=' + encodeURIComponent(entry.cat || '');
+    fetchJsonp(url).catch(() => {});
   }
 
   let saveTimer = null;
